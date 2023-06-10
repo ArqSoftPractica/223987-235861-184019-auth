@@ -297,8 +297,8 @@ module.exports = class UsersController {
             let messageString = JSON.stringify(objectToBroadcast)
             var params = {
                 Message: messageString,
-                MessageGroupId: topicMessageGroupId,
-                MessageDeduplicationId: topicMessageGroupId,
+                MessageGroupId: crypto.randomUUID(),
+                MessageDeduplicationId: crypto.randomUUID(),
                 TopicArn: topicArn
             };
 
