@@ -296,6 +296,12 @@ module.exports = class UsersController {
         try {
             let messageString = JSON.stringify(objectToBroadcast)
             var params = {
+                MessageAttributes: {
+                    EventMessageType: {
+                      DataType: "String",
+                      StringValue: constants.eventMessageType.create
+                    }
+                },
                 Message: messageString,
                 MessageGroupId: crypto.randomUUID(),
                 MessageDeduplicationId: crypto.randomUUID(),
