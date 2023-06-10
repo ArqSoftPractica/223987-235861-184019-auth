@@ -14,4 +14,9 @@ const notificationType = {
     noStock: 'No More Stock',
 };
 
-module.exports = { roles, notificationType };
+const topicMessageGroupId = {
+    company: 'Company',
+    user: 'User',
+};
+
+module.exports = { roles, notificationType, topicMessageGroupId };

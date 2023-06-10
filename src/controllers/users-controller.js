@@ -13,6 +13,8 @@ const { default: axios } = require('axios');
 const sendinblueApiKey = process.env.SENDIN_BLUE_API_KEY;
 const emailTemplateId = 1;
 const constants = require("../constants")
+const snsBroadcast = require('../service/snsService')
+var logger = require("../logger/systemLogger")
 
 module.exports = class UsersController {
     constructor() {
@@ -138,7 +140,9 @@ module.exports = class UsersController {
                                 req.body.companyId = tokenData.companyId;
                     
                                 let userCreated = await this.userRepository.createUser(req.body);
-                    
+                                
+                                this.sendBroadcast(userCreated, process.env.USER_TOPIC_BROADCAST_ARN, constants.topicMessageGroupId.user);
+                                
                                 req.body.password = undefined
                                 //Delete token so that the invite doesn't work anymore
                                 RedisClient.del(hashedToken);
@@ -264,6 +268,9 @@ module.exports = class UsersController {
             try {
                 let userCreated = await this.userRepository.createUser(req.body);
                 req.body.companyApiKey = apiKey
+
+                this.sendBroadcast(company, process.env.COMPANY_TOPIC_BROADCAST_ARN, constants.topicMessageGroupId.company);
+                this.sendBroadcast(userCreated, process.env.USER_TOPIC_BROADCAST_ARN, constants.topicMessageGroupId.user);
                 
                 res.json({
                     id: userCreated.id,
@@ -282,6 +289,28 @@ module.exports = class UsersController {
             }
         } catch (err) {
             this.handleRepoError(err, next)
+        }
+    }
+
+    async sendBroadcast(objectToBroadcast, topicArn, topicMessageGroupId) {
+        try {
+            let messageString = JSON.stringify(objectToBroadcast)
+            var params = {
+                Message: messageString,
+                MessageGroupId: topicMessageGroupId,
+                MessageDeduplicationId: topicMessageGroupId,
+                TopicArn: topicArn
+            };
+
+            snsBroadcast.publish(params, function(err, data) {
+                if (err) {
+                    logger.logError(`Error publishing ${topicMessageGroupId} - ${messageString}`, err)
+                } else {
+                    console.log("Success", data);
+                }
+            });
+        } catch (err) {
+            logger.logError(`Error publishing ${topicMessageGroupId} - ${messageString}`, err)
         }
     }
 
