@@ -19,4 +19,10 @@ const topicMessageGroupId = {
     user: 'User',
 };
 
-module.exports = { roles, notificationType, topicMessageGroupId };
+const eventMessageType =  {
+    create: 'Create',
+    edit: 'Edit',
+    delete: 'Delete',
+}
+
+module.exports = { roles, notificationType, topicMessageGroupId, eventMessageType };
