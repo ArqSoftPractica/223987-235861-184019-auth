@@ -269,8 +269,8 @@ module.exports = class UsersController {
                 let userCreated = await this.userRepository.createUser(req.body);
                 req.body.companyApiKey = apiKey
 
-                this.sendBroadcast(company, process.env.COMPANY_TOPIC_BROADCAST_ARN, constants.topicMessageGroupId.company);
-                this.sendBroadcast(userCreated, process.env.USER_TOPIC_BROADCAST_ARN, constants.topicMessageGroupId.user);
+                this.sendBroadcast(company, process.env.COMPANY_TOPIC_BROADCAST_ARN);
+                this.sendBroadcast(userCreated, process.env.USER_TOPIC_BROADCAST_ARN);
                 
                 res.json({
                     id: userCreated.id,
@@ -292,7 +292,7 @@ module.exports = class UsersController {
         }
     }
 
-    async sendBroadcast(objectToBroadcast, topicArn, topicMessageGroupId) {
+    async sendBroadcast(objectToBroadcast, topicArn) {
         try {
             let messageString = JSON.stringify(objectToBroadcast)
             var params = {
@@ -310,13 +310,13 @@ module.exports = class UsersController {
 
             snsBroadcast.publish(params, function(err, data) {
                 if (err) {
-                    logger.logError(`Error publishing ${topicMessageGroupId} - ${messageString}`, err)
+                    logger.logError(`Error publishing ${messageString}`, err)
                 } else {
                     console.log("Success", data);
                 }
             });
         } catch (err) {
-            logger.logError(`Error publishing ${topicMessageGroupId} - ${messageString}`, err)
+            logger.logError(`Error publishing objectToBroadcast in user controller`, err)
         }
     }
 
