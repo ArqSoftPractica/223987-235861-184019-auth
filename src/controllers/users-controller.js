@@ -141,7 +141,7 @@ module.exports = class UsersController {
                     
                                 let userCreated = await this.userRepository.createUser(req.body);
                                 
-                                this.sendBroadcast(userCreated, process.env.USER_TOPIC_BROADCAST_ARN, constants.topicMessageGroupId.user);
+                                this.sendBroadcast(userCreated, process.env.USER_TOPIC_BROADCAST_ARN);
                                 
                                 req.body.password = undefined
                                 //Delete token so that the invite doesn't work anymore
