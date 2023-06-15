@@ -2,7 +2,6 @@ const express = require('express');
 const Router    = express.Router();
 const verifyToken = require("../authorization/verify-token");
 const verifyRoleIsMaster = require("../authorization/role-is-master");
-const AWS = require('aws-sdk');
 const snsService = require('../service/snsService');
 
 Router.use(express.json());
