@@ -7,9 +7,6 @@ const snsService = require('../service/snsService');
 Router.use(express.json());
 
 Router.post('/awsUpdate', verifyToken, verifyRoleIsMaster(), (req, res, next) => {
-    if (role == rolePermissions.roles.master) {
-
-    }
     if (!req.body) {
         return next(new RestError('Please send data keys in the body', 400));  
     }
