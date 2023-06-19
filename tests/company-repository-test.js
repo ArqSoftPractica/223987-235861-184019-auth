@@ -45,7 +45,8 @@ describe("UserRepository", function() {
     it("should delete the specified company from the db", async function() {
         sequelizeStubDelete.resolves(1);
         const result = await companyRepository.deleteCompany(companyStub.name);
-        expect(sequelizeStubDelete.calledOnceWith({ name: companyStub.name })).to.be.true;
+        const testResult = sequelizeStubDelete.calledOnceWith({ where: { name: companyStub.name } });
+        expect(testResult).to.be.true;
         expect(result).to.equal(1);
     });
 
