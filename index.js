@@ -8,10 +8,14 @@ require('dotenv').config({ path: `${__dirname}/.env.${process.env.NODE_ENV}` });
 app.use(express.json());
 const dbconnection  = require('./src/db/connection/connection');
 const user = require('./src/routes/user');
+const health = require('./src/routes/health');
+const awsUpdate = require('./src/routes/awsUpdate');
 var logger = require("./src/logger/systemLogger")
 
 app.use(cors())
 app.use(user)
+app.use(health)
+app.use(awsUpdate)
 
 dbconnection.sequelize.sync()
   .then(() => {
